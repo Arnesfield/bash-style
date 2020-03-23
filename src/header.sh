@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Styling for header
+
+STYL_HUSER="${STYL_HCLR_DEF} ${STYL_HCLR_USER} ${USER} ${STYL_HCLR_DEF}"
+
+STYL_HEADER="Date today: ${STYL_HCLR_DATE}$(date)${STYL_HCLR_DEF}"
+STYL_HEADER="$STYL_HEADER\n\n"
+STYL_HEADER="$STYL_HEADER> ${STYL_HCLR_GREET}$(styl_rand_htext)"
+STYL_HEADER="$STYL_HEADER\n"
+
+printf "$STYL_HEADER" "$STYL_HUSER"
