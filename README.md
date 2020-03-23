@@ -2,6 +2,10 @@
 
 Personal simple styling for the terminal.
 
+<p align="center">
+  <img src="./preview.png" alt="bash-styles preview" />
+</p>
+
 ## Installation
 
 1. Run `install.sh` like so:
