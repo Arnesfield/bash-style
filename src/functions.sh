@@ -7,3 +7,7 @@ clrhist() {
   history -cw
   rm -f ~/.bash_history
 }
+
+asd() {
+  free && echo && df ~
+}
