@@ -8,7 +8,7 @@ Personal simple styling for the terminal.
 
 ## Installation
 
-1. Run `install.sh` like so:
+1. Run `install` script:
 
    ```sh
    $ sh install.sh
@@ -20,19 +20,23 @@ Personal simple styling for the terminal.
 
    ```sh
    source ~/.bash_styles/index.sh
-   source ~/.bash_styles/functions.sh
-   source ~/.bash_styles/alias.sh
    ```
-
-   Remember to strategically place these!
 
 3. Have fun!
 
 ## Uninstall
 
-Run your favorite `rm -rf`!
+1. Remove the source from your `.bashrc` or `.bash_profile`:
 
-```sh
-# be careful!
-$ rm -rf ~/.bash_styles
-```
+   ```sh
+   # remove this line:
+   source ~/.bash_styles/index.sh
+   ```
+
+2. Run the `uninstall` script:
+
+   ```sh
+   $ sh ./uninstall.sh
+   ```
+
+   This will run `rm -rf ~/.bash_styles`.
