@@ -7,13 +7,12 @@ cp ./src/* ~/.bash_styles
 
 # message
 
-STYL_CLR_TITLE="\033[92m"
-STYL_CLR_CMD="\033[93m"
-STYL_CLR_DEF="\033[00m"
+STYL_MSG="bash-styles installed. (saved ~/.bash_styles)"
+STYL_MSG="${STYL_MSG}\n\nAdd to your .bashrc or .bash_profile:"
+STYL_MSG="${STYL_MSG}\n\n  source ~/.bash_styles/index.sh"
+STYL_MSG="${STYL_MSG}\n\nTo uninstall, run the script:"
+STYL_MSG="${STYL_MSG}\n\n  sh uninstall.sh"
+STYL_MSG="${STYL_MSG}\n"
+printf "$STYL_MSG"
 
-STYL_INSTALL="\n${STYL_CLR_TITLE}bash-styles${STYL_CLR_DEF} installed. To uninstall, run:"
-STYL_INSTALL="$STYL_INSTALL ${STYL_CLR_CMD}rm -rf ~/.bash_styles${STYL_CLR_DEF}."
-STYL_INSTALL="${STYL_INSTALL}\n\nHappy styling!\n"
-printf "$STYL_INSTALL"
-
-unset STYL_CLR_TITLE STYL_CLR_CMD STYL_CLR_DEF STYL_INSTALL
+unset STYL_MSG
