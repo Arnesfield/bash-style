@@ -7,18 +7,25 @@ if [ "$color_prompt" = yes ]; then
   color_branch="\033[96m"
   color_default="\033[00m"
   color_user='\033[92m'
-  [ $EUID -eq 0 ] && color_user="\033[07m\033[01m$color_user"
+  if [ $EUID -eq 0 ]; then
+    color_user="\033[07m\033[01m$color_user"
+  fi
 fi
 
 # git branch in prompt
 parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+  local branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+  if [ $branch ]; then
+    echo "$1$branch$2"
+  fi
 }
 
 ps1_user='\u@\h'
-[ $EUID -eq 0 ] && ps1_user=" $ps1_user "
+if [ $EUID -eq 0 ]; then
+  ps1_user=" $ps1_user "
+fi
 
 PS1="\n$color_user$ps1_user$color_default" # user@host
 PS1="$PS1 $color_dir\W$color_default" # dir
-PS1="$PS1 $color_branch\$(parse_git_branch)$color_default" # git branch
+PS1="$PS1\$(parse_git_branch ' $color_branch' $color_default)" # git branch
 PS1="$PS1\n$ " # input
