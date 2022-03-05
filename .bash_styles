@@ -10,9 +10,7 @@ if [ "$color_prompt" = yes ]; then
   color_default="\033[00m"
   color_user='\033[92m'
   if [ $EUID -eq 0 ]; then
-    # surround with spaces
-    ps1_user=" $ps1_user "
-    color_user="\033[07m\033[01m$color_user"
+    color_user="\033[01m$color_user"
   fi
 fi
 
