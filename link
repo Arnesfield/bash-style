@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+source_style="$PWD/.bash_styles"
+target_style="$HOME/.bash_styles"
+
+echo "Run: ln -s \"$source_style\" \"$target_style\""
+read -p "Continue symlink? [y/N]: " REPLY
+
+if [ "$REPLY" = 'y' ] || [ "$REPLY" = 'Y' ]; then
+  ln -s "$source_style" "$target_style"
+fi
