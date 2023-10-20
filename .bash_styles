@@ -1,13 +1,11 @@
 # bash-styles
 # https://github.com/Arnesfield/bash-styles
 
-ps1_user='\u@\h'
-
 # colors
 if [ "$color_prompt" = yes ]; then
   color_dir="\033[93m"
   color_branch="\033[96m"
-  color_default="\033[00m"
+  color_reset="\033[00m"
   color_user='\033[92m'
   if [ $EUID -eq 0 ]; then
     color_user="\033[01m$color_user"
@@ -22,7 +20,22 @@ parse_git_branch() {
   fi
 }
 
-PS1="\n$color_user$ps1_user$color_default" # user@host
-PS1="$PS1 $color_dir\W$color_default" # dir
-PS1="$PS1\$(parse_git_branch ' $color_branch' $color_default)" # git branch
-PS1="$PS1\n$ " # input
+# NOTE: taken from https://unix.stackexchange.com/a/9607/560763
+is_ssh() {
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    return 0
+  else
+    case $(ps -o comm= -p "$PPID") in
+      sshd|*/sshd) return 0 ;;
+    esac
+  fi
+  return 1
+}
+
+ps1_user='\u'
+is_ssh && ps1_user+='@\h'
+
+PS1="\n$color_user$ps1_user$color_reset" # user@host
+PS1+=" $color_dir\W$color_reset" # dir
+PS1+="\$(parse_git_branch ' $color_branch' $color_reset)" # git branch
+PS1+="\n$ " # input
