@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
-source_style="$PWD/.bash_styles"
-target_style="$HOME/.bash_styles"
+# link .bash_style to ~/.bash_style
 
-echo "Run: ln -s \"$source_style\" \"$target_style\""
-read -p "Continue symlink? [y/N]: " REPLY
+file=".bash_style"
+source_file="$PWD/$file"
+target_file="$HOME/$file"
 
-if [ "$REPLY" = 'y' ] || [ "$REPLY" = 'Y' ]; then
-  ln -s "$source_style" "$target_style"
-fi
+echo "Run: ln -s \"$source_file\" \"$target_file\""
+read -rp "Continue symlink? [y/N]: " reply
+
+case $reply in
+[Yy]*) ln -vs "$source_file" "$target_file" ;;
+*) exit 1 ;;
+esac

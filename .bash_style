@@ -1,0 +1,122 @@
+# https://github.com/Arnesfield/bash-style
+
+# optional variables from main script (e.g. .bashrc, .bash_profile)
+# or uncomment and set them yourself:
+
+# color_prompt= # set to "yes" to enable colors
+# hide_username= # hide matching username
+
+# bash_style ${colors=yes} ${hide_username=}
+bash_style() {
+  # args
+  local colors="$1"        # set to "yes" to enable colors
+  local hide_username="$2" # hide matching username
+
+  # declare colors
+  if [ "$colors" = yes ]; then
+    local RED="\033[31m" GREEN="\033[32m" YELLOW="\033[33m" CYAN="\033[36m"
+    local MAGENTA="\033[35m" BOLD="\033[1m" DIM="\033[2m" NOCOLOR="\033[0m"
+  fi
+
+  # defaults
+  local login_host_symbol="@"
+  local login_color="$GREEN"
+  [ $EUID -eq 0 ] && login_color="$BOLD$login_color" # add bold for root
+
+  local dir_color="$YELLOW"
+
+  local git_dirty_symbol="*"
+  local git_dirty_no_staged_color="$RED"
+  local git_dirty_partial_staged_color="$MAGENTA"
+  local git_dirty_all_staged_color="$CYAN"
+  local git_prompt_color="$CYAN"
+
+  local prompt_symbol="$"
+  local prompt_last_cmd_failed_color="$DIM"
+
+  local terminal_title="$USER$login_host_symbol$HOSTNAME: ${PWD/#$HOME/\~}"
+
+  # local or ssh session
+  # NOTE: taken from https://unix.stackexchange.com/a/9607/560763
+  local is_ssh
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    is_ssh=1
+  else
+    case $(ps -o comm= -p "$PPID") in
+    sshd | */sshd) is_ssh=1 ;;
+    esac
+  fi
+
+  local login_prompt
+  # always display username for root user, otherwise show only if not hidden
+  [ $EUID -eq 0 ] || [ "$USER" != "$hide_username" ] && login_prompt="\u"
+  # display hostname when in ssh session
+  [ -n "$is_ssh" ] && login_prompt+="$login_host_symbol\h"
+  # include colors
+  if [ -n "$login_prompt" ]; then
+    login_prompt="$login_color$login_prompt$NOCOLOR "
+  fi
+
+  local dir_prompt="$dir_color\W$NOCOLOR"
+
+  # display git info
+  local git_prompt
+  git_prompt=$(git branch 2>/dev/null | sed -n 's/^* //p')
+  if [ "$git_prompt" ]; then
+    local git_dirty git_has_unstaged git_dirty_color="$git_dirty_no_staged_color"
+    local git_args="--quiet --exit-code --ignore-submodules"
+
+    # modified files
+    git diff --no-ext-diff $git_args 2>/dev/null || git_has_unstaged=1
+    if [ -z "$git_has_unstaged" ]; then
+      # untracked and unstaged files
+      [ "$(git ls-files -o --exclude-standard 2>/dev/null)" ] && git_has_unstaged=1
+    fi
+    # untracked files
+    if [ -n "$git_has_unstaged" ] ||
+      test -n "$(git status --porcelain 2>/dev/null)"; then
+      git_dirty=1
+    fi
+
+    # check if has staged changes and change dirty color
+    if git diff --name-only --cached $git_args 2>/dev/null; then
+      : # do nothing if has no staged changes
+    elif [ -n "$git_has_unstaged" ]; then
+      git_dirty_color="$git_dirty_partial_staged_color"
+    else
+      git_dirty_color="$git_dirty_all_staged_color"
+    fi
+
+    # set git prompt
+    [ -n "$git_dirty" ] && git_prompt+="$git_dirty_color$git_dirty_symbol"
+    git_prompt=" $git_prompt_color$git_prompt$NOCOLOR"
+  fi
+
+  # prompt
+  local main_line="$login_prompt$dir_prompt$git_prompt"
+
+  # change color if last command did not exit with 0
+  # run this check every prompt print
+  # wrap colors inside \[...\] to fix issues: something to do with line length calculation?
+  local prompt_color="\`[ \$? -ne 0 ] && echo \[$prompt_last_cmd_failed_color\]\`"
+  local prompt_line="$prompt_color$prompt_symbol\[$NOCOLOR\] "
+
+  # primary prompt
+  PS1="\n$main_line\n$prompt_line"
+  # multiline command
+  PS2="$prompt_line"
+
+  # terminal title
+  echo -ne "\033]0;$terminal_title\007"
+}
+
+# setup and cleanup
+setup_bash_style() {
+  # enable colors by default if $color_prompt is not set
+  local colors
+  [ -n "${color_prompt+x}" ] && colors="$color_prompt" || colors=yes
+  # apply bash_style with args
+  PROMPT_COMMAND="bash_style $colors $hide_username"
+}
+setup_bash_style
+unset -f setup_bash_style

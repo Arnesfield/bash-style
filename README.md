@@ -1,45 +1,67 @@
-# bash-styles
+# bash-style
 
-Personal simple styling for the terminal.
+Personal bash prompt.
 
 ```
-<user>@<host> <directory basename> <git branch>
-$ <your command>
+<user>@<host> <directory basename> <git branch><*>
+$ <command>
 ```
 
-![bash-styles preview](./preview.png "bash-styles preview")
+Terminal title (`PROMPT_COMMAND`):
 
-## Installation
+```
+<user>@<host>: ~/path/to/dir
+```
 
-1. Download `.bash_styles` to your home directory:
+![bash-style preview](./preview.png "bash-style preview")
+
+## Features
+
+- Bolds `<user>@<host>` when the user is root.
+- Shows `@<host>` only when in an SSH session.
+- Shows `git` branch and whether the working tree is dirty (`*`).
+- Prompt `$` color is dimmed when the last command did not exit with `0`.
+- Updates the terminal title.
+
+## Install
+
+1. Download `.bash_style` to your home directory:
 
    ```sh
-   wget github.com/Arnesfield/bash-styles/raw/master/.bash_styles
+   wget github.com/Arnesfield/bash-style/raw/main/.bash_style
    ```
 
-2. Add `.bash_styles` to your `.bashrc` or `.bash_profile`:
+2. Add `.bash_style` to your `.bashrc` or `.bash_profile`:
 
    ```sh
-   if [ -f ~/.bash_styles ]; then
-     . ~/.bash_styles
+   if [ -f ~/.bash_style ]; then
+     . ~/.bash_style
    fi
    ```
 
-   Note that `.bash_styles` only changes the value of the `PS1` environment variable. Keep this in mind when updating your `.bashrc` or `.bash_profile`.
+   Note that `.bash_style` modifies the following environment variables: `PS1`, `PS2`, and `PROMPT_COMMAND`.
 
 ## Uninstall
 
-1. Remove `.bash_styles` from your `.bashrc` or `.bash_profile`:
+1. Remove `.bash_style`:
 
    ```sh
-   # remove this:
-   if [ -f ~/.bash_styles ]; then
-     . ~/.bash_styles
+   rm ~/.bash_style
+   ```
+
+1. Remove `.bash_style` from your `.bashrc` or `.bash_profile`:
+
+   ```sh
+   if [ -f ~/.bash_style ]; then
+     . ~/.bash_style
    fi
    ```
 
-2. Remove `.bash_styles`:
+## References
 
-   ```sh
-   rm ~/.bash_styles
-   ```
+- [sindresorhus/pure](https://github.com/sindresorhus/pure)
+- [sapegin/dotfiles bash_prompt.bash](https://github.com/sapegin/dotfiles/blob/dd063f9c30de7d2234e8accdb5272a5cc0a3388b/includes/bash_prompt.bash)
+
+## License
+
+Licensed under the [MIT License](LICENSE).
