@@ -14,8 +14,9 @@ bash_style() {
 
   # declare colors
   if [ "$colors" = yes ]; then
-    local RED="\033[31m" GREEN="\033[32m" YELLOW="\033[33m" CYAN="\033[36m"
-    local MAGENTA="\033[35m" BOLD="\033[1m" DIM="\033[2m" NOCOLOR="\033[0m"
+    local RED="\033[31m" GREEN="\033[32m" YELLOW="\033[33m"
+    local BLUE="\033[34m" MAGENTA="\033[35m" CYAN="\033[36m"
+    local BOLD="\033[1m" DIM="\033[2m" NOCOLOR="\033[0m"
   fi
 
   # defaults
@@ -28,7 +29,7 @@ bash_style() {
   local git_dirty_symbol="*"
   local git_dirty_no_staged_color="$RED"
   local git_dirty_partial_staged_color="$MAGENTA"
-  local git_dirty_all_staged_color="$CYAN"
+  local git_dirty_all_staged_color="$BLUE"
   local git_prompt_color="$CYAN"
 
   local prompt_symbol="$"
