@@ -60,36 +60,36 @@ bash_style() {
 
   local dir_prompt="$dir_color\W$NOCOLOR"
 
-  # display git info
+  # display git branch and dirty
   local git_prompt
   git_prompt=$(git branch 2>/dev/null | sed -n 's/^* //p')
   if [ "$git_prompt" ]; then
-    local git_dirty git_has_unstaged git_dirty_color="$git_dirty_no_staged_color"
-    local git_args="--quiet --exit-code --ignore-submodules"
+    local git_dirty git_args="--quiet --exit-code --ignore-submodules"
 
-    # modified files
-    git diff --no-ext-diff $git_args 2>/dev/null || git_has_unstaged=1
-    if [ -z "$git_has_unstaged" ]; then
-      # untracked and unstaged files
-      [ "$(git ls-files -o --exclude-standard 2>/dev/null)" ] && git_has_unstaged=1
-    fi
-    # untracked files
-    if [ -n "$git_has_unstaged" ] ||
-      test -n "$(git status --porcelain 2>/dev/null)"; then
+    # unstaged tracked files
+    if ! git diff --no-ext-diff $git_args 2>/dev/null ||
+      # unstaged untracked files
+      [ "$(git ls-files -o --exclude-standard 2>/dev/null)" ]; then
+      git_dirty=2 # has unstaged
+    # has file changes
+    elif [ "$(git status --porcelain 2>/dev/null)" ]; then
       git_dirty=1
     fi
 
-    # check if has staged changes and change dirty color
-    if git diff --name-only --cached $git_args 2>/dev/null; then
-      : # do nothing if has no staged changes
-    elif [ -n "$git_has_unstaged" ]; then
-      git_dirty_color="$git_dirty_partial_staged_color"
-    else
-      git_dirty_color="$git_dirty_all_staged_color"
+    if [ -n "$git_dirty" ]; then
+      local git_dirty_color
+      # no staged changes
+      if git diff --name-only --cached $git_args 2>/dev/null; then
+        git_dirty_color="$git_dirty_no_staged_color"
+      elif [ "$git_dirty" -eq 2 ]; then
+        git_dirty_color="$git_dirty_partial_staged_color"
+      else
+        git_dirty_color="$git_dirty_all_staged_color"
+      fi
+      # set git dirty color and symbol
+      git_prompt+="$git_dirty_color$git_dirty_symbol"
     fi
 
-    # set git prompt
-    [ -n "$git_dirty" ] && git_prompt+="$git_dirty_color$git_dirty_symbol"
     git_prompt=" $git_prompt_color$git_prompt$NOCOLOR"
   fi
 
