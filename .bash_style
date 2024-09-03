@@ -48,16 +48,16 @@ bash_style() {
     esac
   fi
 
+  # display login (user@host)
   local login_prompt
   # always display username for root user, otherwise show only if not hidden
   [ $EUID -eq 0 ] || [ "$USER" != "$hide_username" ] && login_prompt="\u"
   # display hostname when in ssh session
   [ -n "$is_ssh" ] && login_prompt+="$login_host_symbol\h"
   # include colors
-  if [ -n "$login_prompt" ]; then
-    login_prompt="$login_color$login_prompt$NOCOLOR "
-  fi
+  [ -n "$login_prompt" ] && login_prompt="$login_color$login_prompt$NOCOLOR "
 
+  # display directory
   local dir_prompt="$dir_color\W$NOCOLOR"
 
   # display git branch and dirty
