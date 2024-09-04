@@ -50,8 +50,8 @@ bash_style() {
 
   # display login (user@host)
   local login_prompt
-  # always display username for root user, otherwise show only if not hidden
-  [ $EUID -eq 0 ] || [ "$USER" != "$hide_username" ] && login_prompt="\u"
+  # display username if ssh, root user, or not hidden
+  [ -n "$is_ssh" ] || [ $EUID -eq 0 ] || [ "$USER" != "$hide_username" ] && login_prompt="\u"
   # display hostname when in ssh session
   [ -n "$is_ssh" ] && login_prompt+="$login_host_symbol\h"
   # include colors
