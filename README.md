@@ -20,6 +20,10 @@ Terminal title (`PROMPT_COMMAND`):
 - Bolds `<user>@<host>` when the user is root.
 - Shows `@<host>` only when in an SSH session.
 - Shows `git` branch and whether the working tree is dirty (`*`).
+- Git dirty (`*`) color changes depending on the staged and unstaged changes:
+  - Red - Has no staged changes.
+  - Magenta - Has both staged and unstaged changes.
+  - Blue - Has staged changes only.
 - Prompt `$` color is dimmed when the last command did not exit with `0`.
 - Updates the terminal title.
 
