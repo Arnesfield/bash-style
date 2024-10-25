@@ -62,7 +62,9 @@ bash_style() {
 
   # display git branch and dirty
   local git_prompt
-  git_prompt=$(git branch 2>/dev/null | sed -n 's/^* //p')
+  git_prompt=$(git branch --show-current 2>/dev/null)
+  [ -z "$git_prompt" ] && git_prompt=$(git branch 2>/dev/null | sed -n 's/^* //p')
+
   if [ "$git_prompt" ]; then
     local git_dirty git_args="--quiet --exit-code --ignore-submodules"
 
